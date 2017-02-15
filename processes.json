@@ -1,0 +1,11 @@
+{
+    "apps" : [ {
+
+        "name"        : "attacker-server",
+        "script"      : "./build/pm2.js",
+        "watch"       : [ "src" ],
+        "log_date_format"  : "YYYY-MM-DD HH:mm Z"
+
+    } ]
+
+}
